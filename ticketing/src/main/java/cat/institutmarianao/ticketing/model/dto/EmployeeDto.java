@@ -62,6 +62,9 @@ public class EmployeeDto extends UserDto {
 	public Long getRoomId() {
 		return roomId;
 	}
+	public String getUsername() {
+		return username;
+	}
 
 	public void setRoomId(Long roomId) {
 		this.roomId = roomId;

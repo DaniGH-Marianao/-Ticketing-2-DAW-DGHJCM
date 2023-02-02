@@ -62,14 +62,23 @@ public class TicketController {
 	@GetMapping("/new")
 	public ModelAndView newTicket(@ModelAttribute("user") UserDto userDto) {
 		ModelAndView newTicketsView = new ModelAndView("ticket");
-		// TODO new ticket
+		newTicketsView.getModelMap().addAttribute("pageTitle", "ticket.new.title");
+		newTicketsView.getModelMap().addAttribute("ticket", new TicketDto());
+		newTicketsView.getModelMap().addAttribute("categories", TicketDto.Category.values());
 		return newTicketsView;
 	}
 
 	@PostMapping("/new")
 	public String submitNewTicket(@Validated TicketDto ticketDto, BindingResult result, ModelMap modelMap) {
-		// TODO submit new ticket
-		return null;
+		if (result.hasErrors()) {
+			modelMap.addAttribute("pageTitle",  "ticket.new.title");
+			modelMap.addAttribute("ticket", new TicketDto());
+			modelMap.addAttribute("categories", TicketDto.Category.values());
+			return "ticket";
+		}
+		//TODO Falta programar POST
+		//ticketS.add(userForm.getUserDto());
+		return "redirect:/ticket";
 	}
 
 	@GetMapping("/list/{ticket-status}")
