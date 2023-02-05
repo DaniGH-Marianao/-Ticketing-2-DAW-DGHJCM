@@ -30,6 +30,7 @@ import cat.institutmarianao.ticketing.model.dto.TicketDto.Category;
 import cat.institutmarianao.ticketing.model.dto.TicketDto.Status;
 import cat.institutmarianao.ticketing.model.dto.UserDto;
 import cat.institutmarianao.ticketing.model.forms.TicketsFilter;
+import cat.institutmarianao.ticketing.services.TicketService;
 import cat.institutmarianao.ticketing.services.UserService;
 
 @Controller
@@ -39,6 +40,8 @@ public class TicketController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private TicketService ticketService;
 
 	@ModelAttribute("user")
 	public UserDto setupUser() {
@@ -57,28 +60,34 @@ public class TicketController {
 		DateFormatter dateFormatter = new DateFormatter();
 		dateFormatter.setPattern("yyyy-MM-dd'T'HH:mm");
 		binder.addCustomFormatter(dateFormatter, "date");
+		binder.setDisallowedFields("ticket");
 	}
 
 	@GetMapping("/new")
 	public ModelAndView newTicket(@ModelAttribute("user") UserDto userDto) {
 		ModelAndView newTicketsView = new ModelAndView("ticket");
+		TicketDto ticketDto = new TicketDto();
+		ticketDto.setPerformer(userDto.getFullName());
 		newTicketsView.getModelMap().addAttribute("pageTitle", "ticket.new.title");
-		newTicketsView.getModelMap().addAttribute("ticket", new TicketDto());
-		newTicketsView.getModelMap().addAttribute("categories", TicketDto.Category.values());
+		newTicketsView.getModelMap().addAttribute("ticket", ticketDto);
 		return newTicketsView;
 	}
 
 	@PostMapping("/new")
 	public String submitNewTicket(@Validated TicketDto ticketDto, BindingResult result, ModelMap modelMap) {
+		System.out.println("Hola1");
 		if (result.hasErrors()) {
-			modelMap.addAttribute("pageTitle",  "ticket.new.title");
-			modelMap.addAttribute("ticket", new TicketDto());
-			modelMap.addAttribute("categories", TicketDto.Category.values());
+			modelMap.addAttribute("pageTitle", "ticket.new.title");
+			modelMap.addAttribute("ticket", ticketDto);
+			modelMap.addAttribute("errors", result.getAllErrors());
+			System.out.println(result.getAllErrors());
 			return "ticket";
 		}
-		//TODO Falta programar POST
-		//ticketS.add(userForm.getUserDto());
-		return "redirect:/ticket";
+
+		System.out.println("Hola3");
+		ticketService.add(ticketDto);
+
+		return "redirect:/tickets";
 	}
 
 	@GetMapping("/list/{ticket-status}")

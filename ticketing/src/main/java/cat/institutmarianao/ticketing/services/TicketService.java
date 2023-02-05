@@ -5,24 +5,32 @@ import java.util.List;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import cat.institutmarianao.ticketing.model.dto.ActionDto;
+import cat.institutmarianao.ticketing.model.dto.AssignmentDto;
 import cat.institutmarianao.ticketing.model.dto.EmployeeDto;
+import cat.institutmarianao.ticketing.model.dto.InterventionDto;
 import cat.institutmarianao.ticketing.model.dto.TechnicianDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto;
 import cat.institutmarianao.ticketing.model.dto.UserDto;
+import cat.institutmarianao.ticketing.model.forms.TicketsFilter;
 import cat.institutmarianao.ticketing.model.forms.UsersFilter;
 
-public interface TicketService{
+public interface TicketService {
+
 	List<TicketDto> getAllTickets();
 
-	List<ActionDto> getAllActions();
+	List<TicketDto> filterTickets(TicketsFilter filter);
 
-	List<TechnicianDto> getAllTechnicians();
+	TicketDto add(TicketDto ticketDto);
 
-	List<UserDto> filterUsers(UsersFilter filter);
+	void update(TicketDto ticketDto);
 
-	UserDto add(UserDto userDto);
+	void remove(Long ticketId);
 
-	void update(UserDto userDto);
+	TicketDto getTicketById(Long ticketId);
 
-	void remove(String username);
+	void assign(Long ticketId, AssignmentDto assignmentDto);
+
+	void intervention(Long ticketId, InterventionDto interventionDto);
+
+	void close(Long ticketId);
 }
