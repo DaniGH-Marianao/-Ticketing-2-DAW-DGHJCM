@@ -126,7 +126,7 @@
 						<spring:message code="users.confirm.remove.button" />
 					</a>
 					<button type="button" class="btn btn-default" data-dismiss="modal">
-						<spring:message code="users.confirm.cancel.button" />
+						<spring:message code="users.confirm.remove.cancel.button" />
 					</button>
 				</div>
 			</div>

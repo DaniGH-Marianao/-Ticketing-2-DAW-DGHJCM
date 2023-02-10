@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import cat.institutmarianao.ticketing.model.dto.ActionDto;
 import cat.institutmarianao.ticketing.model.dto.AssignmentDto;
+import cat.institutmarianao.ticketing.model.dto.CloseDto;
 import cat.institutmarianao.ticketing.model.dto.EmployeeDto;
 import cat.institutmarianao.ticketing.model.dto.InterventionDto;
 import cat.institutmarianao.ticketing.model.dto.TechnicianDto;
@@ -24,13 +25,11 @@ public interface TicketService {
 
 	void update(TicketDto ticketDto);
 
-	void remove(Long ticketId);
-
 	TicketDto getTicketById(Long ticketId);
 
-	void assign(Long ticketId, AssignmentDto assignmentDto);
+	AssignmentDto assign(AssignmentDto assignmentDto);
 
-	void intervention(Long ticketId, InterventionDto interventionDto);
+	InterventionDto intervention(InterventionDto interventionDto);
 
-	void close(Long ticketId);
+	CloseDto close(CloseDto closeDto);
 }

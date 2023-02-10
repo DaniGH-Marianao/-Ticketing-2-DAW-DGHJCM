@@ -2,6 +2,8 @@ package cat.institutmarianao.ticketing.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.security.core.Authentication;
@@ -28,8 +30,10 @@ import cat.institutmarianao.ticketing.model.dto.InterventionDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto.Category;
 import cat.institutmarianao.ticketing.model.dto.TicketDto.Status;
+import cat.institutmarianao.ticketing.model.dto.UserDto.Role;
 import cat.institutmarianao.ticketing.model.dto.UserDto;
 import cat.institutmarianao.ticketing.model.forms.TicketsFilter;
+import cat.institutmarianao.ticketing.model.forms.UsersFilter;
 import cat.institutmarianao.ticketing.services.TicketService;
 import cat.institutmarianao.ticketing.services.UserService;
 
@@ -67,34 +71,41 @@ public class TicketController {
 	public ModelAndView newTicket(@ModelAttribute("user") UserDto userDto) {
 		ModelAndView newTicketsView = new ModelAndView("ticket");
 		TicketDto ticketDto = new TicketDto();
-		ticketDto.setPerformer(userDto.getFullName());
+		ticketDto.setPerformer(userDto.getUsername());
 		newTicketsView.getModelMap().addAttribute("pageTitle", "ticket.new.title");
 		newTicketsView.getModelMap().addAttribute("ticket", ticketDto);
 		return newTicketsView;
 	}
 
 	@PostMapping("/new")
-	public String submitNewTicket(@Validated TicketDto ticketDto, BindingResult result, ModelMap modelMap) {
-		System.out.println("Hola1");
+	public String submitNewTicket(@Validated @ModelAttribute("ticket") TicketDto ticketDto, BindingResult result, ModelMap modelMap) {
+
 		if (result.hasErrors()) {
 			modelMap.addAttribute("pageTitle", "ticket.new.title");
 			modelMap.addAttribute("ticket", ticketDto);
-			modelMap.addAttribute("errors", result.getAllErrors());
-			System.out.println(result.getAllErrors());
 			return "ticket";
 		}
 
-		System.out.println("Hola3");
 		ticketService.add(ticketDto);
-
-		return "redirect:/tickets";
+		return "redirect:/tickets/list/PENDING";
 	}
 
 	@GetMapping("/list/{ticket-status}")
 	public ModelAndView allTicketsList(@ModelAttribute("user") UserDto userDto,
 			@PathVariable("ticket-status") Status ticketStatus) {
 		ModelAndView ticketsView = new ModelAndView("tickets");
-		// TODO retrieve all tickets
+		TicketsFilter ticketFilter = new TicketsFilter();
+		ticketFilter.setStatus(ticketStatus);
+		
+		if (userDto.getRole() == Role.EMPLOYEE)
+			ticketFilter.setPerformer(userDto.getUsername());
+
+		ticketsView.getModelMap().addAttribute("pageTitle", "tickets.list." + ticketStatus.name() + ".title");
+		ticketsView.getModelMap().addAttribute("ticketsFilter", ticketFilter);
+		ticketsView.getModelMap().addAttribute("ticketsList", ticketService.filterTickets(ticketFilter));
+		ticketsView.getModelMap().addAttribute("employeeList", userService.getAllEmployees());
+		ticketsView.getModelMap().addAttribute("technicianList", userService.getAllTechnicians());
+		ticketsView.getModelMap().addAttribute("assign", new AssignmentDto());
 		return ticketsView;
 	}
 

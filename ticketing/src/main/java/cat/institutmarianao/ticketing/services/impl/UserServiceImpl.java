@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 		UriComponentsBuilder uriTemplate = UriComponentsBuilder.fromHttpUrl(baseUri);
 
 		if (filter.getRole() != null) {
-			uriTemplate.queryParam("role", filter.getRole().name());
+			uriTemplate.queryParam("roles", filter.getRole().name());
 		}
 
 		if (filter.getFullName() != null) {

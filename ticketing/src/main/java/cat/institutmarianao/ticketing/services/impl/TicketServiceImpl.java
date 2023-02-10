@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cat.institutmarianao.ticketing.model.dto.AssignmentDto;
+import cat.institutmarianao.ticketing.model.dto.CloseDto;
 import cat.institutmarianao.ticketing.model.dto.InterventionDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto;
 import cat.institutmarianao.ticketing.model.forms.TicketsFilter;
@@ -62,6 +63,10 @@ public class TicketServiceImpl implements TicketService {
 		if (filter.getCategory() != null) {
 			uriTemplate.queryParam("category", filter.getCategory());
 		}
+		
+		if (filter.getPerformer() != null) {
+			uriTemplate.queryParam("reportedBy", filter.getPerformer());
+		}
 
 		ResponseEntity<TicketDto[]> response = restTemplate.getForEntity(uriTemplate.encode().toUriString(),
 				TicketDto[].class);
@@ -75,7 +80,7 @@ public class TicketServiceImpl implements TicketService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<TicketDto> request = new HttpEntity<TicketDto>(ticketDto);
+		HttpEntity<TicketDto> request = new HttpEntity<TicketDto>(ticketDto, headers);
 
 		return restTemplate.postForObject(uri, request, TicketDto.class);
 	}
@@ -87,33 +92,44 @@ public class TicketServiceImpl implements TicketService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
-
-		HttpEntity<TicketDto> request = new HttpEntity<>(ticketDto);
+		HttpEntity<TicketDto> request = new HttpEntity<>(ticketDto, headers);
 		restTemplate.exchange(uri, HttpMethod.PUT, request, TicketDto.class);
 	}
 
 	@Override
-	public void remove(Long ticketId) {
-		// TODO Auto-generated method stub
-		
+	public AssignmentDto assign(AssignmentDto assignmentDto) {
+		final String uri = HOST + ":" + PORT + "/tickets/save/action";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<AssignmentDto> request = new HttpEntity<AssignmentDto>(assignmentDto, headers);
+
+		return restTemplate.postForObject(uri, request, AssignmentDto.class);
 	}
 
 	@Override
-	public void assign(Long ticketId, AssignmentDto assignmentDto) {
-		// TODO Auto-generated method stub
-		
+	public InterventionDto intervention(InterventionDto interventionDto) {
+		final String uri = HOST + ":" + PORT + "/tickets/save/action";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<InterventionDto> request = new HttpEntity<InterventionDto>(interventionDto, headers);
+
+		return restTemplate.postForObject(uri, request, InterventionDto.class);
 	}
 
 	@Override
-	public void intervention(Long ticketId, InterventionDto interventionDto) {
-		// TODO Auto-generated method stub
-		
-	}
+	public CloseDto close(CloseDto closeDto) {
+		final String uri = HOST + ":" + PORT + "/tickets/save/action";
 
-	@Override
-	public void close(Long ticketId) {
-		// TODO Auto-generated method stub
-		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<CloseDto> request = new HttpEntity<CloseDto>(closeDto, headers);
+
+		return restTemplate.postForObject(uri, request, CloseDto.class);
 	}
 
 }

@@ -30,7 +30,7 @@
 					<sec:authorize access="hasAuthority('EMPLOYEE')">
 						<form:select id="performer" path="performer"
 							cssClass="form-control"
-							cssErrorClass="form-control form-control-error" disabled="true">
+							cssErrorClass="form-control form-control-error">
 							<form:option value="" label="${employeeAll}" />
 							<form:options items="${employeeList}" itemLabel="fullName"
 								itemValue="username" />
