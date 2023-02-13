@@ -2,7 +2,6 @@
 	contentType="text/html"
 	pageEncoding="UTF-8"
 %>
-
 <%@ taglib
 	prefix="fmt"
 	uri="http://java.sun.com/jsp/jstl/fmt"
@@ -10,11 +9,11 @@
 <%@ taglib
 	prefix="c"
 	uri="http://java.sun.com/jsp/jstl/core"
-%><%@ taglib
+%>
+<%@ taglib
 	prefix="fn"
 	uri="http://java.sun.com/jsp/jstl/functions"
 %>
-
 <%@ taglib
 	prefix="spring"
 	uri="http://www.springframework.org/tags"
@@ -63,15 +62,13 @@
 	type="text/javascript"
 	src="${ticketsJs}"
 >
+	
 </script>
 </head>
 <body>
 	<section class="container">
 		<jsp:include page="sections/header.jsp" />
-
 		<jsp:include page="sections/tickets-filter.jsp" />
-
-
 		<table
 			id="ticketTable"
 			class="table table-striped table-bordered table-condensed table-responsive"
@@ -102,26 +99,45 @@
 						<td>${ticket.performer}</td>
 						<td><spring:message code="ticket.category.${ticket.category}" /></td>
 						<td>${ticket.description}</td>
-
-						<td class="text-center">
+						<td class="text-center"><c:url
+								value="../assign"
+								var="ticketHref"
+							>
+							</c:url>
 							<button
 								type="button"
 								class="btn btn-info btn-sm"
 								data-toggle="modal"
 								data-target="#confirm"
 								data-backdrop="true"
-								onclick="prepareAssignTicketDialog('${ticket.id}')"
+								onclick="changeTicket('${ticket.id}', '${assignHref}')"
 							>
 								<span class="glyphicon glyphicon-hand-right"> </span>
+							</button></td>
+						<td class="text-center"><c:url
+								value="/tickets/close"
+								var="closeHref"
+							>
+								<c:param
+									name="close"
+									value="${close}"
+								/>
+							</c:url>
+							<button
+								type="submit"
+								class="btn btn-success btn-sm"
+								data-toggle="modal"
+								data-target="#confirm"
+								data-backdrop="true"
+								onclick="prepareCloseTicketDialog(${ticket.openingDate},${ticket.performer},${ticket.category},${ticket.description},${status})"
+							>
+								<span class="glyphicon glyphicon-ok"> </span>
 							</button></td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-
 	</section>
-
-
 	<!-- Assign Modal -->
 	<div
 		id="confirm"
@@ -129,50 +145,59 @@
 		role="dialog"
 	>
 		<div class="modal-dialog">
-
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div
-					class="modal-header"
-					style="padding: 35px 50px;"
-				>
-					<button
-						type="button"
-						class="close"
-						data-dismiss="modal"
-					>&times;</button>
-					<h4 class="modal-title">
-						<spring:message code="tickets.assign.title" />
-					</h4>
-				</div>
-				<div
-					class="modal-body"
-					style="padding: 40px 50px;"
-				>
-					<form:form
-						modelAttribute="assign"
-						cssClass="form-horizontal"
-					>
-						<fieldset>
-
+			<form:form
+				modelAttribute="assignment"
+				cssClass="form-horizontal"
+				action="${ticketHref }"
+				method="post"
+			>
+				<fieldset>
+					<div class="modal-content">
+						<div
+							class="modal-header"
+							style="padding: 35px 50px;"
+						>
+							<button
+								type="button"
+								class="close"
+								data-dismiss="modal"
+							>&times;</button>
+							<h4 class="modal-title">
+								<spring:message code="tickets.assign.title" />
+							</h4>
+						</div>
+						<div
+							class="modal-body"
+							style="padding: 40px 50px;"
+						>
+							<form:hidden
+								path="ticketId"
+								id="ticketId"
+								cssClass="form-control"
+							/>
+							<form:hidden
+								path="performer"
+								id="performer"
+								cssClass="form-control"
+							/>
 							<div class="form-group">
 								<form:label
 									for="technician"
 									path="technician"
 									cssClass="col-sm-3 control-label py-2"
 								>
-									<spring:message code="tickets.assign.technician" />
-								</form:label>
+				                 <spring:message code="tickets.assign.technician" />
+				                </form:label>
 								<div class="col-sm-8">
 									<form:select
 										path="technician"
 										items="${technicianList}"
+										itemValue="username"
 										cssClass="form-control"
 										cssErrorClass="form-control form-control-error"
 									/>
 								</div>
 							</div>
-
 							<div class="form-group">
 								<form:label
 									for="priority"
@@ -182,38 +207,34 @@
 									<spring:message code="tickets.assign.priority" />
 								</form:label>
 								<div class="col-sm-8">
-									<input
+									<form:input
 										type="number"
-										class="form-control"
-										value="1"
+										cssClass="form-control"
+										path="priority"
 										min="1"
 										max="9"
 									/>
 								</div>
 							</div>
-
-
-						</fieldset>
-					</form:form>
-				</div>
-				<div class="modal-footer">
-					<a
-						id="assignHref"
-						class="btn btn-success"
-						href="/ticketing/tickets/assign"
-					> <span class="glyphicon glyphicon-ok"> </span> <spring:message
-							code="tickets.assign.button"
-						/>
-					</a>
-					<button
-						type="button"
-						class="btn btn-default"
-						data-dismiss="modal"
-					>
-						<spring:message code="tickets.assign.cancel.button" />
-					</button>
-				</div>
-			</div>
+						</div>
+						<div class="modal-footer">
+							<form:button
+								class="btn btn-success"
+								onclick="prepareAssignTicketDialog(ticketId.value)"
+							>
+								<spring:message code="tickets.assign.button" />
+							</form:button>
+							<button
+								type="button"
+								class="btn btn-default"
+								data-dismiss="modal"
+							>
+								<spring:message code="tickets.assign.cancel.button" />
+							</button>
+						</div>
+					</div>
+				</fieldset>
+			</form:form>
 		</div>
 	</div>
 </body>

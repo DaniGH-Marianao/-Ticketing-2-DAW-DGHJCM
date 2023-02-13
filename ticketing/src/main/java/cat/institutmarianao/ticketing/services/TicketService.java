@@ -3,6 +3,7 @@ package cat.institutmarianao.ticketing.services;
 import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import cat.institutmarianao.ticketing.model.dto.ActionDto;
 import cat.institutmarianao.ticketing.model.dto.AssignmentDto;
@@ -12,6 +13,7 @@ import cat.institutmarianao.ticketing.model.dto.InterventionDto;
 import cat.institutmarianao.ticketing.model.dto.TechnicianDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto;
 import cat.institutmarianao.ticketing.model.dto.UserDto;
+import cat.institutmarianao.ticketing.model.dto.TicketDto.Status;
 import cat.institutmarianao.ticketing.model.forms.TicketsFilter;
 import cat.institutmarianao.ticketing.model.forms.UsersFilter;
 
@@ -31,5 +33,5 @@ public interface TicketService {
 
 	InterventionDto intervention(InterventionDto interventionDto);
 
-	CloseDto close(CloseDto closeDto);
+	CloseDto close(Long ticketId, Status ticketStatus);
 }

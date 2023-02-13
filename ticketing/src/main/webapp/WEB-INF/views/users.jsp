@@ -84,21 +84,34 @@
 								</td>
 							</c:otherwise>
 						</c:choose>
-						<td class="text-center">
-							<sec:authorize access="hasAnyAuthority('SUPERVISOR' )">
-								<c:url value="/users/remove" var="removeHref">
-									<c:param name="username" value="${user.username}" />
+						<td class="text-center"><sec:authorize
+								access="hasAnyAuthority('SUPERVISOR' )"
+							>
+								<c:url
+									value="/users/remove"
+									var="removeHref"
+								>
+									<c:param
+										name="username"
+										value="${user.username}"
+									/>
 								</c:url>
-								<spring:message code="users.confirm.remove"
-									arguments="${user.username}" var="confirmRemoveMsg" />
-								<button type="button" class="btn btn-danger btn-sm"
-									data-toggle="modal" data-target="#confirm"
+								<spring:message
+									code="users.confirm.remove"
+									arguments="${user.username}"
+									var="confirmRemoveMsg"
+								/>
+								<button
+									type="button"
+									class="btn btn-danger btn-sm"
+									data-toggle="modal"
+									data-target="#confirm"
 									onclick="changeDni('${confirmRemoveMsg}','${removeHref}')"
-									data-backdrop="true">
+									data-backdrop="true"
+								>
 									<span class="glyphicon glyphicon-trash"> </span>
 								</button>
-							</sec:authorize>
-						</td>
+							</sec:authorize></td>
 					</tr>
 				</c:forEach>
 			</tbody>

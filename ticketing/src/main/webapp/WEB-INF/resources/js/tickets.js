@@ -16,3 +16,8 @@ function prepareCloseTicketDialog(openingDate, performer, category, description,
 		.replace('{1}', performer).replace('{2}', category).replace('{3}', description);
 	document.getElementById("closeDialogHref").href = closeDialogHref;
 }
+
+function changeTicket(ticketId, ticketHref) {
+	document.getElementById("ticketId").value = ticketId;
+	document.getElementById("ticketHref").href = ticketHref;
+}

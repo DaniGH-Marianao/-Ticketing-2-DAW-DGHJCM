@@ -19,6 +19,7 @@ import cat.institutmarianao.ticketing.model.dto.AssignmentDto;
 import cat.institutmarianao.ticketing.model.dto.CloseDto;
 import cat.institutmarianao.ticketing.model.dto.InterventionDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto;
+import cat.institutmarianao.ticketing.model.dto.TicketDto.Status;
 import cat.institutmarianao.ticketing.model.forms.TicketsFilter;
 import cat.institutmarianao.ticketing.services.TicketService;
 
@@ -121,8 +122,10 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public CloseDto close(CloseDto closeDto) {
+	public CloseDto close(Long ticketId, Status ticketStatus) {
 		final String uri = HOST + ":" + PORT + "/tickets/save/action";
+		CloseDto closeDto = new CloseDto();
+		closeDto.setTicketId(ticketId);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);

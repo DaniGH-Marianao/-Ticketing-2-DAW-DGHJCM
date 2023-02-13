@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import cat.institutmarianao.ticketing.model.dto.AssignmentDto;
+import cat.institutmarianao.ticketing.model.dto.CloseDto;
 import cat.institutmarianao.ticketing.model.dto.InterventionDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto;
 import cat.institutmarianao.ticketing.model.dto.TicketDto.Category;
@@ -95,44 +96,45 @@ public class TicketController {
 			@PathVariable("ticket-status") Status ticketStatus) {
 		ModelAndView ticketsView = new ModelAndView("tickets");
 		TicketsFilter ticketFilter = new TicketsFilter();
+		AssignmentDto assignmentDto = new AssignmentDto();
 		ticketFilter.setStatus(ticketStatus);
 		
 		if (userDto.getRole() == Role.EMPLOYEE)
 			ticketFilter.setPerformer(userDto.getUsername());
 
+		assignmentDto.setPriority(1);
+		assignmentDto.setPerformer(userDto.getUsername());
 		ticketsView.getModelMap().addAttribute("pageTitle", "tickets.list." + ticketStatus.name() + ".title");
 		ticketsView.getModelMap().addAttribute("ticketsFilter", ticketFilter);
 		ticketsView.getModelMap().addAttribute("ticketsList", ticketService.filterTickets(ticketFilter));
 		ticketsView.getModelMap().addAttribute("employeeList", userService.getAllEmployees());
 		ticketsView.getModelMap().addAttribute("technicianList", userService.getAllTechnicians());
-		ticketsView.getModelMap().addAttribute("assign", new AssignmentDto());
+		ticketsView.getModelMap().addAttribute("assignment", assignmentDto);
 		return ticketsView;
 	}
 
 	@PostMapping("/ajax/list")
 	@ResponseBody
 	public List<TicketDto> filterTicketList(@RequestBody TicketsFilter filter) {
-		// TODO retrieve all tickets filtered
-		return null;
+		return ticketService.filterTickets(filter);
 	}
 
 	@PostMapping("/assign")
 	public String assignTicket(@ModelAttribute("assignment") AssignmentDto assignmentDto) {
-		// TODO save assignment to tracking
-		return null;
+		ticketService.assign(assignmentDto);
+		return "redirect:/tickets/list/PENDING";
 	}
 
 	@PostMapping("/intervention")
 	public String interventionTicket(@ModelAttribute("intervention") InterventionDto interventionDto) {
-		// TODO save intervention to tracking
-		return null;
+		ticketService.intervention(interventionDto);
+		return "redirect:/tickets/list/IN_PROCESS";
 	}
 
 	@GetMapping("/close")
 	public String closeTicket(@RequestParam("ticketId") Long ticketId,
 			@RequestParam("ticketStatus") Status ticketStatus) {
-
-		// TODO save close to tracking
-		return null;
+		ticketService.close(ticketId, ticketStatus);
+		return "redirect:/tickets/list/CLOSED";
 	}
 }
