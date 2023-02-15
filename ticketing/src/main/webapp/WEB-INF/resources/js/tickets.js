@@ -1,6 +1,6 @@
 function changeTicketId(ticketId) {
-	ticketsIdInput = document.getElementById("ticketId");
-	ticketsIdInput.value = ticketId;
+	document.getElementById("ticketId").value = ticketId;
+	
 }
 
 function prepareAssignTicketDialog(ticketId) {
@@ -11,13 +11,11 @@ function prepareInterventionTicketDialog(ticketId) {
 	changeTicketId(ticketId);
 }
 
-function prepareCloseTicketDialog(openingDate, performer, category, description, ticketStatus) {
+function prepareCloseTicketDialog(ticketId, openingDate, performer, category, description, ticketStatus) {
+    const closeDialogMsg = document.getElementById("closeDialogMsg").innerHTML;
 	document.getElementById("closeDialogMessage").innerHTML = closeDialogMsg.replace('{0}', openingDate)
 		.replace('{1}', performer).replace('{2}', category).replace('{3}', description);
-	document.getElementById("closeDialogHref").href = closeDialogHref;
-}
-
-function changeTicket(ticketId, ticketHref) {
-	document.getElementById("ticketId").value = ticketId;
-	document.getElementById("ticketHref").href = ticketHref;
+	document.getElementById("ticketStatus").value = ticketStatus;
+	document.getElementById("ticketIdClose").value = ticketId;
+	
 }

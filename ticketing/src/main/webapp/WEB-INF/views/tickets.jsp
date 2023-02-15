@@ -80,8 +80,10 @@
 					<th><spring:message code="tickets.table.head.employee" /></th>
 					<th><spring:message code="tickets.table.head.category" /></th>
 					<th><spring:message code="tickets.table.head.description" /></th>
-					<th />
-					<th />
+					<sec:authorize access="hasAnyAuthority('SUPERVISOR' )">
+						<th />
+						<th />
+					</sec:authorize>
 				</tr>
 			</thead>
 			<tbody>
@@ -99,40 +101,34 @@
 						<td>${ticket.performer}</td>
 						<td><spring:message code="ticket.category.${ticket.category}" /></td>
 						<td>${ticket.description}</td>
-						<td class="text-center"><c:url
-								value="../assign"
-								var="ticketHref"
-							>
-							</c:url>
-							<button
-								type="button"
-								class="btn btn-info btn-sm"
-								data-toggle="modal"
-								data-target="#confirm"
-								data-backdrop="true"
-								onclick="changeTicket('${ticket.id}', '${assignHref}')"
-							>
-								<span class="glyphicon glyphicon-hand-right"> </span>
-							</button></td>
-						<td class="text-center"><c:url
-								value="/tickets/close"
-								var="closeHref"
-							>
-								<c:param
-									name="close"
-									value="${close}"
-								/>
-							</c:url>
-							<button
-								type="submit"
-								class="btn btn-success btn-sm"
-								data-toggle="modal"
-								data-target="#confirm"
-								data-backdrop="true"
-								onclick="prepareCloseTicketDialog(${ticket.openingDate},${ticket.performer},${ticket.category},${ticket.description},${status})"
-							>
-								<span class="glyphicon glyphicon-ok"> </span>
-							</button></td>
+						<sec:authorize access="hasAnyAuthority('SUPERVISOR' )">
+							<td class="text-center">
+								<button
+									type="button"
+									class="btn btn-info btn-sm"
+									data-toggle="modal"
+									data-target="#assign"
+									data-backdrop="true"
+									onclick="changeTicketId('${ticket.id}')"
+								>
+									<span class="glyphicon glyphicon-hand-right"> </span>
+								</button>
+							</td>
+							<td class="text-center">
+								<button
+									type="submit"
+									class="btn btn-success btn-sm"
+									data-toggle="modal"
+									data-target="#close"
+									data-backdrop="true"
+									onclick="
+									prepareCloseTicketDialog('${ticket.id}', '${ticket.openingDate}','${ticket.performer}','${ticket.category}','${ticket.description}','${status}')
+									"
+								>
+									<span class="glyphicon glyphicon-ok"> </span>
+								</button>
+							</td>
+						</sec:authorize>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -140,7 +136,7 @@
 	</section>
 	<!-- Assign Modal -->
 	<div
-		id="confirm"
+		id="assign"
 		class="modal fade"
 		role="dialog"
 	>
@@ -148,7 +144,7 @@
 			<form:form
 				modelAttribute="assignment"
 				cssClass="form-horizontal"
-				action="${ticketHref }"
+				action="../assign"
 				method="post"
 			>
 				<fieldset>
@@ -166,7 +162,9 @@
 								<spring:message code="tickets.assign.title" />
 							</h4>
 						</div>
+
 						<div
+							id="assignament"
 							class="modal-body"
 							style="padding: 40px 50px;"
 						>
@@ -186,8 +184,8 @@
 									path="technician"
 									cssClass="col-sm-3 control-label py-2"
 								>
-				                 <spring:message code="tickets.assign.technician" />
-				                </form:label>
+									<spring:message code="tickets.assign.technician" />
+								</form:label>
 								<div class="col-sm-8">
 									<form:select
 										path="technician"
@@ -235,6 +233,77 @@
 					</div>
 				</fieldset>
 			</form:form>
+		</div>
+	</div>
+
+	<div
+		id="close"
+		class="modal fade"
+		role="dialog"
+	>
+		<div class="modal-dialog">
+			<form
+				class="form-horizontal"
+				action="../close"
+				method="get"
+			>
+				<fieldset>
+					<div class="modal-content">
+						<div
+							class="modal-header"
+							style="padding: 35px 50px;"
+						>
+							<button
+								type="button"
+								class="close"
+								data-dismiss="modal"
+							>&times;</button>
+							<h4 class="modal-title">
+								<spring:message code="tickets.confirm.close.title" />
+							</h4>
+						</div>
+						<div
+							class="modal-body"
+							style="padding: 40px 50px;"
+						>
+							<input
+								name="ticketId"
+								type="hidden"
+								id="ticketIdClose"
+							/> <input
+								name="ticketStatus"
+								type="hidden"
+								id="ticketStatus"
+							/>
+							<div
+								id="closeDialogMsg"
+								class="hidden"
+							>
+								<spring:message code="tickets.confirm.close" />
+							</div>
+							<div id="closeDialogMessage"></div>
+						</div>
+
+
+						<div class="modal-footer">
+							<button
+								type="submit"
+								class="btn btn-success"
+								onclick="prepareAssignTicketDialog(ticketId.value)"
+							>
+								<spring:message code="tickets.confirm.close.button" />
+							</button>
+							<button
+								type="button"
+								class="btn btn-default"
+								data-dismiss="modal"
+							>
+								<spring:message code="tickets.confirm.close.cancel.button" />
+							</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
 		</div>
 	</div>
 </body>
