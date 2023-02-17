@@ -43,6 +43,7 @@ public class UserForm {
 	@Positive(groups = { OnUserCreate.class, OnUserUpdate.class })
 	private Long roomId;
 
+	@NotBlank
 	private String place;
 
 	@Positive(groups = { OnUserCreate.class, OnUserUpdate.class })
