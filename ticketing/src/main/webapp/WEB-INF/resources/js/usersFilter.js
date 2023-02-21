@@ -16,7 +16,7 @@ function ajaxCall() {
             : jQuery("#role option:selected").val();
     request["fullName"] = jQuery("#name").val() == "" ? null
             : jQuery("#name").val();
-
+	var myRole = jQuery("#myRole").text();
     jQuery.ajax({
         type: "POST",
         contentType: "application/json",
@@ -27,7 +27,6 @@ function ajaxCall() {
         timeout: 600000,
         success: function (response) {
             var tbody = "";
-
             for (var i = 0; i < response.length; i++) {
 
                 tbody += "<tr><td>" + (i + 1) + "</td>";
@@ -36,11 +35,12 @@ function ajaxCall() {
                 tbody += "<td>" + response[i].fullName + "</td>";
                 tbody += "<td>" + response[i].extension + "</td>";
                 tbody += "<td>" + externalLocation(response[i].role, response[i].location) + "</td>";
-                tbody += "<td class='text-center'>";
-                if(role === "SUPERVISOR"){
-                   tbody += "<button type='button' class='btn btn-danger btn-sm' data-toggle='modal' data-target='#remove' onclick='prepareRemoveDialog(\"" + response[i].username + "\")' data-backdrop='true'><span class='glyphicon glyphicon-trash'> </span></button>";
+                if(myRole === "SUPERVISOR"){
+                    tbody += "<td class='text-center'>";
+               		tbody += "<button type='button' class='btn btn-danger btn-sm' data-toggle='modal' data-target='#remove' onclick='prepareRemoveDialog(\"" + response[i].username + "\")' data-backdrop='true'><span class='glyphicon glyphicon-trash'> </span></button>";
+					tbody += "</td>";
 				}
-				tbody += "</td></tr>";
+				tbody += "</tr>";
             }
             jQuery("#userTable tbody").html(tbody);
         },

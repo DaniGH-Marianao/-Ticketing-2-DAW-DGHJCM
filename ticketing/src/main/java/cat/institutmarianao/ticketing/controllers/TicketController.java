@@ -79,7 +79,8 @@ public class TicketController {
 	}
 
 	@PostMapping("/new")
-	public String submitNewTicket(@Validated @ModelAttribute("ticket") TicketDto ticketDto, BindingResult result, ModelMap modelMap) {
+	public String submitNewTicket(@Validated @ModelAttribute("ticket") TicketDto ticketDto, BindingResult result,
+			ModelMap modelMap) {
 
 		if (result.hasErrors()) {
 			modelMap.addAttribute("pageTitle", "ticket.new.title");
@@ -98,7 +99,7 @@ public class TicketController {
 		TicketsFilter ticketFilter = new TicketsFilter();
 		AssignmentDto assignmentDto = new AssignmentDto();
 		ticketFilter.setStatus(ticketStatus);
-		
+
 		if (userDto.getRole() == Role.EMPLOYEE)
 			ticketFilter.setPerformer(userDto.getUsername());
 

@@ -81,7 +81,7 @@ public class UserController {
 	}
 
 	@PostMapping("/new")
-	public String submitNewUser(@Validated(OnUserCreate.class)UserForm userForm, BindingResult result,
+	public String submitNewUser(@Validated(OnUserCreate.class) UserForm userForm, BindingResult result,
 			ModelMap modelMap) {
 
 		if (result.hasErrors()) {

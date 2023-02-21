@@ -122,7 +122,7 @@
 									data-target="#close"
 									data-backdrop="true"
 									onclick="
-									prepareCloseTicketDialog('${ticket.id}', '${ticket.openingDate}','${ticket.performer}','${ticket.category}','${ticket.description}','${status}')
+									prepareCloseTicketDialog('${ticket.id}', '${ticket.openingDate}','${ticket.performer}','${ticket.category}','${fn:replace(ticket.description, "'", "\\'")}','${status}')
 									"
 								>
 									<span class="glyphicon glyphicon-ok"> </span>
