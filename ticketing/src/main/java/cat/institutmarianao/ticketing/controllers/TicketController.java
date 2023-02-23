@@ -97,20 +97,27 @@ public class TicketController {
 			@PathVariable("ticket-status") Status ticketStatus) {
 		ModelAndView ticketsView = new ModelAndView("tickets");
 		TicketsFilter ticketFilter = new TicketsFilter();
-		AssignmentDto assignmentDto = new AssignmentDto();
 		ticketFilter.setStatus(ticketStatus);
 
 		if (userDto.getRole() == Role.EMPLOYEE)
 			ticketFilter.setPerformer(userDto.getUsername());
 
-		assignmentDto.setPriority(1);
-		assignmentDto.setPerformer(userDto.getUsername());
 		ticketsView.getModelMap().addAttribute("pageTitle", "tickets.list." + ticketStatus.name() + ".title");
 		ticketsView.getModelMap().addAttribute("ticketsFilter", ticketFilter);
 		ticketsView.getModelMap().addAttribute("ticketsList", ticketService.filterTickets(ticketFilter));
 		ticketsView.getModelMap().addAttribute("employeeList", userService.getAllEmployees());
 		ticketsView.getModelMap().addAttribute("technicianList", userService.getAllTechnicians());
-		ticketsView.getModelMap().addAttribute("assignment", assignmentDto);
+
+		if (ticketStatus == Status.IN_PROCESS) {
+			InterventionDto interventionDto = new InterventionDto();
+			ticketsView.getModelMap().addAttribute("intervention", interventionDto);
+		} else {
+			AssignmentDto assignmentDto = new AssignmentDto();
+			assignmentDto.setPriority(1);
+			assignmentDto.setPerformer(userDto.getUsername());
+			ticketsView.getModelMap().addAttribute("assignment", assignmentDto);
+		}
+
 		return ticketsView;
 	}
 

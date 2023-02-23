@@ -80,7 +80,7 @@
 					<th><spring:message code="tickets.table.head.employee" /></th>
 					<th><spring:message code="tickets.table.head.category" /></th>
 					<th><spring:message code="tickets.table.head.description" /></th>
-					<sec:authorize access="hasAnyAuthority('SUPERVISOR' )">
+					<sec:authorize access="hasAnyAuthority('SUPERVISOR', 'TECHNICIAN')">
 						<th />
 						<th />
 					</sec:authorize>
@@ -101,7 +101,9 @@
 						<td>${ticket.performer}</td>
 						<td><spring:message code="ticket.category.${ticket.category}" /></td>
 						<td>${ticket.description}</td>
-						<sec:authorize access="hasAnyAuthority('SUPERVISOR' )">
+						<sec:authorize
+							access="hasAnyAuthority('SUPERVISOR', 'TECHNICIAN')"
+						>
 							<td class="text-center">
 								<button
 									type="button"
@@ -122,7 +124,8 @@
 									data-target="#close"
 									data-backdrop="true"
 									onclick="
-									prepareCloseTicketDialog('${ticket.id}', '${ticket.openingDate}','${ticket.performer}','${ticket.category}','${fn:replace(ticket.description, "'", "\\'")}','${status}')
+									prepareCloseTicketDialog('${ticket.id}', '${ticket.openingDate}','${ticket.performer}','${ticket.category}','${fn:replace(ticket.description, "
+								'", "\\'")}','${status}')
 									"
 								>
 									<span class="glyphicon glyphicon-ok"> </span>
@@ -141,6 +144,8 @@
 		role="dialog"
 	>
 		<div class="modal-dialog">
+			<p>${filterStatus }</p>
+
 			<form:form
 				modelAttribute="assignment"
 				cssClass="form-horizontal"
